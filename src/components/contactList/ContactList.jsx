@@ -1,10 +1,16 @@
-import React from 'react';
+import css from './ContactList.module.css';
 
-const ContactList = ({ contacts }) => {
+import ContactItem from 'components/contactItem/ContactItem';
+
+const ContactList = ({ contacts, onDeleteContact }) => {
   return (
     <ul>
       {contacts.map(contact => (
-        <li key={contact.id}>{contact.name}</li>
+        <ContactItem
+          key={contact.id}
+          contact={contact}
+          onDeleteContact={onDeleteContact}
+        />
       ))}
     </ul>
   );

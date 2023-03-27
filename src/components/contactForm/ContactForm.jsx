@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
 import React, { Component } from 'react';
+import css from './ContactForm.module.css';
 
 class ContactForm extends Component {
   state = {
@@ -7,8 +8,7 @@ class ContactForm extends Component {
     number: '',
   };
 
-  handleChange = event => {
-    const { name, value } = event.target;
+  handleChange = ({ target: { name, value } }) => {
     this.setState({ [name]: value });
   };
 
@@ -16,17 +16,28 @@ class ContactForm extends Component {
     event.preventDefault();
 
     const { name, number } = this.state;
-    this.props.onSubmit({ id: nanoid(), name, number });
+
+    const isExistingContact = this.props.contacts.some(
+      contact => contact.name.toLowerCase() === name.toLowerCase()
+    );
+
+    if (isExistingContact) {
+      alert(`${name} is already in contacts.`);
+      return;
+    }
+
+    this.props.addContact({ id: nanoid(), name, number });
     this.setState({ name: '', number: '' });
   };
 
   render() {
     return (
       <>
-        <form onSubmit={this.handleSubmit}>
-          <label>
+        <form className={css.form} onSubmit={this.handleSubmit}>
+          <label className={css.label}>
             Name
             <input
+              className={css.input}
               type="text"
               name="name"
               pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
@@ -36,9 +47,10 @@ class ContactForm extends Component {
               onChange={this.handleChange}
             />
           </label>
-          <label>
+          <label className={css.label}>
             Number
             <input
+              className={css.input}
               type="tel"
               name="number"
               pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
@@ -48,7 +60,9 @@ class ContactForm extends Component {
               onChange={this.handleChange}
             />
           </label>
-          <button type="submit">Add contact</button>
+          <button className={css.button} type="submit">
+            Add contact
+          </button>
         </form>
       </>
     );
