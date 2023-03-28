@@ -4,6 +4,17 @@ import { nanoid } from 'nanoid';
 import css from './ContactForm.module.css';
 
 class ContactForm extends Component {
+  static propTypes = {
+    contacts: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        number: PropTypes.string.isRequired,
+      }).isRequired
+    ),
+    addContact: PropTypes.func.isRequired,
+  };
+
   state = {
     name: '',
     number: '',
@@ -17,15 +28,6 @@ class ContactForm extends Component {
     event.preventDefault();
 
     const { name, number } = this.state;
-
-    const isExistingContact = this.props.contacts.some(
-      contact => contact.name.toLowerCase() === name.toLowerCase()
-    );
-
-    if (isExistingContact) {
-      alert(`${name} is already in contacts.`);
-      return;
-    }
 
     this.props.addContact({ id: nanoid(), name, number });
     this.setState({ name: '', number: '' });
@@ -69,9 +71,5 @@ class ContactForm extends Component {
     );
   }
 }
-
-ContactForm.propTypes = {
-  addContact: PropTypes.func.isRequired,
-};
 
 export default ContactForm;
